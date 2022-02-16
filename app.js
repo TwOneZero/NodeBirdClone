@@ -9,6 +9,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 //page 라우터
 const pageRouter = require('./routes/page');
+const authRouter = require('./routes/auth');
+const { sequelize } = require('./models');
 
 const app = express();
 app.set('port', process.env.PORT || 8001);
@@ -17,6 +19,15 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log('데이터베이스 연결 성공');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 //공통 미들웨어
 app.use(morgan('dev'));
@@ -36,7 +47,9 @@ app.use(
   })
 );
 
+//라우트
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
 
 //url 에러
 app.use((req, res, next) => {

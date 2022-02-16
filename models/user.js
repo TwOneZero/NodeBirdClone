@@ -29,11 +29,13 @@ module.exports = class User extends Sequelize.Model {
       },
       {
         sequelize,
+        //timestamps, paranoid :  true
+        // -> created_at , updated_at, deleted_at  기록
         timestamps: true,
+        paranoid: true,
         underscored: false,
         modelName: 'User',
         tableName: 'users',
-        paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }
