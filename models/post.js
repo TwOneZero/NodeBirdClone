@@ -9,6 +9,7 @@ module.exports = class Post extends Sequelize.Model {
           allowNull: false,
         },
         img: {
+          //이미지는 파일로 저장함
           type: Sequelize.STRING(200),
           allowNull: true,
         },

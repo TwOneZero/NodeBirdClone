@@ -18,11 +18,13 @@ module.exports = class User extends Sequelize.Model {
           allowNull: true,
         },
         provider: {
+          // kakao  or  local
           type: Sequelize.STRING(10),
           allowNull: false,
           defaultValue: 'local',
         },
         snsId: {
+          //카카오 로그인 시
           type: Sequelize.STRING(30),
           allowNull: true,
         },
