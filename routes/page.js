@@ -1,10 +1,12 @@
 const express = require('express');
+const { Post, User } = require('../models');
 
 const router = express.Router();
 
 router.use((req, res, next) => {
   //res.locals -> public 에 정보 넘겨 줌
-  res.locals.user = null;
+  //모든 라우터에 넣어줌
+  res.locals.user = req.user;
   res.locals.followerCount = 0;
   res.locals.followingCount = 0;
   res.locals.followerIdList = [];
@@ -23,13 +25,23 @@ router.get('/join', (req, res) => {
   });
 });
 
-router.get('/', (req, res, next) => {
-  const twits = [];
-  res.render('main', {
-    title: 'NodeBird',
-    twits,
-    user: req.user,
-  });
+router.get('/', async (req, res, next) => {
+  try {
+    const posts = await Post.findAll({
+      include: {
+        model: User,
+        attributes: ['id', 'nick'],
+      },
+      order: [['createdAt', 'DESC']],
+    });
+    res.render('main', {
+      title: 'NodeBird',
+      twits: posts,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 module.exports = router;

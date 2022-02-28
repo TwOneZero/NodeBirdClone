@@ -11,6 +11,7 @@ dotenv.config();
 //page 라우터
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 
@@ -35,6 +36,7 @@ sequelize
 //공통 미들웨어
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -58,6 +60,7 @@ app.use(passport.session());
 //라우트
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 //url 에러
 app.use((req, res, next) => {
