@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
+const passport = require('passport');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -11,8 +12,10 @@ dotenv.config();
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
 const { sequelize } = require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
+passportConfig();
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
@@ -35,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+//express session
 app.use(
   session({
     resave: false,
@@ -46,6 +50,10 @@ app.use(
     },
   })
 );
+
+//passport session 연결
+app.use(passport.initialize());
+app.use(passport.session());
 
 //라우트
 app.use('/', pageRouter);
