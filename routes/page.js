@@ -7,10 +7,13 @@ router.use((req, res, next) => {
   //res.locals -> public 에 정보 넘겨 줌
   //모든 라우터에 넣어줌
   res.locals.user = req.user;
-  res.locals.followerCount = 0;
-  res.locals.followingCount = 0;
-  res.locals.followerIdList = [];
-  next();
+  //req.user 는 passport deserialize 에서 반환해줌
+  (res.locals.followerCount = req.user ? req.user.Followers.length : 0),
+    (res.locals.followingCount = req.user ? req.user.Followings.length : 0),
+    (res.locals.followerIdList = req.user
+      ? req.user.Followings.map((f) => f.id)
+      : []),
+    next();
 });
 
 router.get('/profile', (req, res) => {
