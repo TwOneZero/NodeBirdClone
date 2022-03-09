@@ -44,17 +44,18 @@ router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
       img: req.body.url,
       UserId: req.user.id,
     });
-    // const hashtag = req.body.content.match(/#[^\s#]*/g);
-    // if (hashtag) {
-    //   const result = await Promise.all(
-    //     hashtag.map((tag) => {
-    //       return Hashtag.findOrCreate({
-    //         where: { title: tag.slice(1).tolowerCase() },
-    //       });
-    //     })
-    //   );
-    //   await post.addHashtags(result.map((r) => r[0]));
-    // }
+    const hashtag = req.body.content.match(/#[^\s#]*/g);
+    if (hashtag) {
+      //Promise.all 로 promise 함수들을 한 번에 처리함
+      const result = await Promise.all(
+        hashtag.map((tag) => {
+          return Hashtag.findOrCreate({
+            where: { title: tag.slice(1).toLowerCase() },
+          });
+        })
+      );
+      await post.addHashtags(result.map((r) => r[0]));
+    }
     res.redirect('/');
   } catch (error) {
     console.error(error);
